@@ -24,7 +24,7 @@ public class PlayerBombFire : MonoBehaviour
     // 실습 과제 10. 폭탄에 오브젝트 풀링(창고) 적용
     public List<GameObject> BombPool; // 폭탄 창고
     public int BombPoolSize = 5;
-
+    public int Damage=30;
     
     private void Start()
     {
@@ -34,7 +34,9 @@ public class PlayerBombFire : MonoBehaviour
         {
             GameObject bombObject = Instantiate(BombPrefab); // 1. 생성
             bombObject.SetActive(false);                     // 2. 비활성화
-            BombPool.Add(bombObject);                        // 3. 창고에 집어 넣는다.
+            BombPool.Add(bombObject);
+            
+            // 3. 창고에 집어 넣는다.
         }
 
         BombRemainCount = BombMaxCount;
