@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,7 @@ using UnityEngine;
 public class Drum : MonoBehaviour, IHitable
 {
     public GameObject DrumEffectPrefab;
-    public float Health;
-    public float MaxHealth = 3;
+    public int hitCount = 0;
 
     public float DelayTime =3f;
 
@@ -15,30 +15,31 @@ public class Drum : MonoBehaviour, IHitable
 
     public float ExplosionRadius = 5;
 
+    private bool _isExplosion = false;
+
     public int Damage = 70;
     public void Hit(int damage)
     {
-        Health -= damage;
-        if (Health == 0)
+        
+        hitCount += 1;
+        if (hitCount >= 3)
         {
-            
-            Kill();
-
-            StartCoroutine( Destry_Coroutine(DelayTime));
+            Explosion();
         }
     }
-    private void Init()
-    {
-        Health = MaxHealth;
-    }
-    void Start()
-    {
-        Init();
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
-    }
+
+  
+ 
     
-    public void Kill()
+    public void Explosion()
     {
+
+        if (_isExplosion)
+        {
+            return;
+        }
+        _isExplosion = true;
+
         GameObject drumBomb = Instantiate(DrumEffectPrefab);
         drumBomb.transform.position = this.transform.position;
 
@@ -49,7 +50,7 @@ public class Drum : MonoBehaviour, IHitable
             rigidbody.AddTorque(-Vector3.right * RotationPower, ForceMode.Impulse);
         }
 
-        int findlayer = LayerMask.GetMask("Monster", "Player");
+        int findlayer = LayerMask.GetMask("Monster", "Player", "Environment");
         Collider[] colliders = Physics.OverlapSphere(transform.position, ExplosionRadius, findlayer);
         // 3. 찾은 콜라이더 중에서 타격 가능한(IHitable) 오브젝트를 찾아서 Hit()한다.
         foreach (Collider collider in colliders)
@@ -57,11 +58,31 @@ public class Drum : MonoBehaviour, IHitable
             IHitable hitable = collider.GetComponent<IHitable>();
             if (hitable != null)
             {
-                // 4. Hit() 한다.
-                hitable.Hit(Damage);
+                
+                
+                    // 4. Hit() 한다.
+                    hitable.Hit(Damage);
+                
+
+                
             }
         }
+        int enviromentLayer = LayerMask.GetMask("Environment");
+        Collider[] enviromentLayers = Physics.OverlapSphere(transform.position, ExplosionRadius, enviromentLayer);
+        foreach (Collider collider in enviromentLayers)
+        {
+            Drum drum = null;
+            if (collider.TryGetComponent<Drum>(out drum))
+            {
+                // 4. Hit() 한다.
+                drum.Explosion();
+            }
+        }
+        StartCoroutine(Destry_Coroutine(DelayTime));
     }
+
+    
+    
 
     private IEnumerator Destry_Coroutine(float delayTime) 
     {

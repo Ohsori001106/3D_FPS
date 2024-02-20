@@ -6,41 +6,64 @@ using UnityEngine.UI;
 
 public class PlayerGunFire : MonoBehaviour
 {
+
+    public PlayerGun CurrentGun;
+
+    public List<PlayerGun> GunInventory;
+
+    
+
     // 목표: 마우스 왼족 버튼을 누르면 시선이 바라보는 방향으로 총을 발사하고 싶다.
     // 필요 속성
     // - 총알 튀는 이펙트 프리팹
     public ParticleSystem HitEffect;
 
     public float Timer = 0;
-    public float FireCoolTime = 0.2f;
 
-    public float rebound = 2f; //반동 크기
-    public float reboundDuration = 0.1f; //반동 지속
-    public float reboundTime; //반동시간
+ 
 
 
-    // 총알 개수
-    public int BulletRemainCount = 30;
-    // 최대총알숫자
-    public int BulletMaxCount = 270;
+    
     // 총알집
     public int BulletBox;
     // - 총알 개수 텍스트 UI
     public Text bulletUI;
     public Text ReloadUI;
 
-    private Coroutine _reloadCoroutine;
+    
 
-    private const float Relode = 1.5f; // 재장전 시간
+    
     public bool _isReloading = false; // 재장전 중이냐?
 
-    public int damage = 1;
+    private void Start()
+    {
+        RifreshGun();
+    }
+
 
     private void Update()
     {
-        Timer += Time.deltaTime;
+       Timer += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            CurrentGun = GunInventory[0];
+            RifreshGun();
+            RefreshUI();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CurrentGun = GunInventory[1];
+            RifreshGun();
+            RefreshUI();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CurrentGun = GunInventory[2];
+            RifreshGun();
+            RefreshUI();
+        }
         // 1. 만약에 마우스 왼쪽 버튼을 누른 상태 && 총알 쿨타임 && 총알이 0보다 클 때 발사
-        if (Input.GetMouseButton(0) && Timer >= FireCoolTime && BulletRemainCount > 0)
+        if (Input.GetMouseButton(0) && Timer >= CurrentGun.FireCoolTime && CurrentGun.BulletRemainCount > 0)
         {
             // 재장전 중이라면 재장전 코루틴을 중지
             if (_isReloading)
@@ -49,7 +72,7 @@ public class PlayerGunFire : MonoBehaviour
                 _isReloading = false;
                 ReloadUI.text = "";
             }
-            BulletRemainCount--;
+            CurrentGun.BulletRemainCount--;
             Timer = 0;
 
             // 2. 레이(광선)을 생성하고,위치와 방향을 설정한다.
@@ -63,7 +86,7 @@ public class PlayerGunFire : MonoBehaviour
                 IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
                 if (hitObject != null)
                 {
-                    hitObject.Hit(damage);
+                    hitObject.Hit(CurrentGun.damage);
                 }
 
                 // 실습 과제 18. 레이저를 몬스터에게 맞출 시 몬스터 체력 닳는 기능 구현
@@ -78,10 +101,10 @@ public class PlayerGunFire : MonoBehaviour
             RefreshUI();
         }
         // R 키를 누르면 재장전을 시작
-        if (Input.GetKeyDown(KeyCode.R) && BulletMaxCount > 0)
+        if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletMaxCount > 0)
         {
             _isReloading = true;
-            StartCoroutine(Reload_Coroutine(Relode));
+            StartCoroutine(Reload_Coroutine(CurrentGun.Relode));
             ReloadingUI();
         }
        
@@ -94,7 +117,7 @@ public class PlayerGunFire : MonoBehaviour
 
         if (_isReloading)
         {
-            BulletRemainCount = BulletMaxCount; // 총알 장전
+            CurrentGun.BulletRemainCount = CurrentGun.BulletMaxCount; // 총알 장전
             RefreshUI(); // 총알 장전 UI
             ReloadUI.text = ""; // 1.5초 후 공백으로 만듬
             _isReloading = false; // false는 재장전이 아닐 때를 의미함
@@ -103,12 +126,27 @@ public class PlayerGunFire : MonoBehaviour
 
     private void RefreshUI()
     {
-        bulletUI.text = $"{BulletRemainCount}/{BulletMaxCount}";
+        bulletUI.text = $"{CurrentGun.BulletRemainCount}/{CurrentGun.BulletMaxCount}";
     }
     private void ReloadingUI()
     {
         ReloadUI.text = $"{"재장전 중..."}";
     }
 
+    public void RifreshGun()
+    {
+        foreach ( PlayerGun gun in GunInventory)
+        {
+            if(gun == CurrentGun)
+            {
+                gun.gameObject.SetActive(true);
+            }
+            else
+            {
+                gun.gameObject.SetActive(false);
+            }
+            
+        }
+    }
 
 }
