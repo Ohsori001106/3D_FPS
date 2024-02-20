@@ -9,7 +9,7 @@ public enum GunType
     Sniper,
     Pistoi
 }
-public class PlayerGun : MonoBehaviour
+public class Gun : MonoBehaviour
 {
     public GunType GType;
 
@@ -25,7 +25,7 @@ public class PlayerGun : MonoBehaviour
 
     public float Relode = 1.5f;
 
-    
+    public Sprite ProfileImage;
 
 
 
@@ -36,11 +36,7 @@ public class PlayerGun : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-
-    }
+   
 
     
 }
