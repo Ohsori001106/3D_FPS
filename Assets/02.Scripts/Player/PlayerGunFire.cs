@@ -17,6 +17,10 @@ public class PlayerGunFire : MonoBehaviour
 
     private bool _isZoomMode = false; // 줌 했냐?
 
+    private const float ZoomInDuration = 0.3f;
+    private const float ZoomOutDuration = 0.2f;
+    private float _zoomProgress; // 0 ~ 1
+
     public Image ZoomImage;
 
     public GameObject CrosshairUI;
@@ -63,9 +67,21 @@ public class PlayerGunFire : MonoBehaviour
         if (Input.GetMouseButtonDown(2) && CurrentGun.GType == GunType.Sniper)
         {
             _isZoomMode = !_isZoomMode; // 줌 모드 뒤집기
-            RefreshZoomMode();
-
+            _zoomProgress = 0f;
             RefreshUI();
+        }
+        if(CurrentGun.GType == GunType.Sniper && _zoomProgress < 1)
+        {
+            if(_isZoomMode) // 줌인
+            {
+                _zoomProgress += Time.deltaTime / ZoomInDuration;
+                Camera.main.fieldOfView = Mathf.Lerp(DefaultFOV,ZoomFOV, _zoomProgress);
+            }
+            else
+            {
+                _zoomProgress += Time.deltaTime / ZoomOutDuration;
+                Camera.main.fieldOfView = Mathf.Lerp(ZoomFOV, DefaultFOV, _zoomProgress);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -75,6 +91,7 @@ public class PlayerGunFire : MonoBehaviour
             RifreshGun();
             RefreshUI();
             RefreshZoomMode();
+            _zoomProgress = 1f;
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -83,6 +100,7 @@ public class PlayerGunFire : MonoBehaviour
             RifreshGun();
             RefreshUI();
             RefreshZoomMode();
+            _zoomProgress = 1f;
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -91,6 +109,7 @@ public class PlayerGunFire : MonoBehaviour
             RifreshGun();
             RefreshUI();
             RefreshZoomMode();
+            _zoomProgress = 1f;
         }
         // 1. 만약에 마우스 왼쪽 버튼을 누른 상태 && 총알 쿨타임 && 총알이 0보다 클 때 발사
         if (Input.GetMouseButton(0) && Timer >= CurrentGun.FireCoolTime && CurrentGun.BulletRemainCount > 0)
@@ -133,8 +152,7 @@ public class PlayerGunFire : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletMaxCount > 0)   // R 키를 누르면 재장전을 시작
         {
-            _isReloading = false;
-            RefreshZoomMode();
+            
             _isReloading = true;
             StartCoroutine(Reload_Coroutine(CurrentGun.Relode));
             ReloadingUI();
@@ -148,6 +166,7 @@ public class PlayerGunFire : MonoBehaviour
             _isZoomMode = false;
             ChangeGun();
             RefreshZoomMode();
+            _zoomProgress = 1f;
         }
         else if (Input.GetKeyDown(KeyCode.RightBracket)) // ] 키를 눌렀을 때
         {
@@ -157,6 +176,7 @@ public class PlayerGunFire : MonoBehaviour
             _isZoomMode = false;
             ChangeGun();
             RefreshZoomMode();
+            _zoomProgress = 1f;
         }
     }
 
