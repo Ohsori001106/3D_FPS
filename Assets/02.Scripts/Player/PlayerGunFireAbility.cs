@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerGunFire : MonoBehaviour
+public class PlayerGunFireAbility : MonoBehaviour
 {
 
     public Gun CurrentGun;
