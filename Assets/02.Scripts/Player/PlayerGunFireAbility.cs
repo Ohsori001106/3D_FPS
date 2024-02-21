@@ -199,7 +199,7 @@ public class PlayerGunFireAbility : MonoBehaviour
         RifreshGun();
         RefreshUI();
     }
-    private void RefreshUI()
+    public void RefreshUI()
     {
         GunImageUI.sprite = CurrentGun.ProfileImage;
         bulletUI.text = $"{CurrentGun.BulletRemainCount}/{CurrentGun.BulletMaxCount}";

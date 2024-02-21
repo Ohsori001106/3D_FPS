@@ -7,7 +7,7 @@ using UnityEngine.UI;
 // 데이터 관리 -> 데이터를 생성, 수정, 삭제, 조회(검색)
 public class ItemManager : MonoBehaviour
 {
-    public ItemManager Instance { get; private set; }
+    public static ItemManager Instance { get; private set; }
 
     public Text HealthItemCountTextUI;
     public Text StaminaItemCountTextUI;
@@ -34,6 +34,8 @@ public class ItemManager : MonoBehaviour
         ItemList.Add(new Item(ItemType.Bullet, 7));  // 2: Bullet
 
         RefreshUI();
+
+        PlayerGunFireAbility playerGunFireAbility = GetComponent<PlayerGunFireAbility>();
     }
 
     // 1. 아이템 추가(생성)
@@ -81,4 +83,6 @@ public class ItemManager : MonoBehaviour
         StaminaItemCountTextUI.text = $"x{GetItemCount(ItemType.Stamina)}";
         BulletItemCountTextUI.text = $"x{GetItemCount(ItemType.Bullet)}";
     }
+
+    
 }
