@@ -16,12 +16,16 @@ public enum MonsterState
 }
 public class Monster : MonoBehaviour, IHitable
 {
+    public float AttackTimer = 0;
+    public float AttackCoolTime = 0.5f;
+
     [Range(0, 100)]
     public float Health;
     public float MaxHealth = 100;
     public Slider HealthSliderUI;
     public float MoveSpeed = 4f;  // 이동 상태
     public const float TOLERANCE = 0.1f;
+    public int Damage = 10;
 
     private CharacterController _characterController;  // 캐릭터 컨트롤러
 
@@ -112,7 +116,24 @@ public class Monster : MonoBehaviour, IHitable
     }
     private void Attack()
     {
-
+        if ( Vector3.Distance(_target.position, transform.position)>AttackDistance)
+        {
+            Debug.Log("상태 전환: Attack -> Trace");
+            _currentState = MonsterState.Trace;
+            return;
+        }
+        if (Vector3.Distance(_target.position, transform.position) < AttackDistance)
+        {
+            AttackTimer += Time.deltaTime;
+            IHitable playerHitable = _target.GetComponent<IHitable>();
+            if (playerHitable != null && AttackTimer >= AttackCoolTime)
+            {
+                AttackTimer = 0f;
+                Debug.Log("떄렸다");
+                playerHitable.Hit(Damage);
+            }
+        }
+            
     }
 
     private void Comeback()
