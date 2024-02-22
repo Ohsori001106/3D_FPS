@@ -10,7 +10,7 @@ public enum MonsterState
     Idle,     // 대기
     Trace,    // 추적
     Attack,   // 공격
-    Return,   // 복귀
+    Comeback,   // 복귀
     Damaged,  // 공격 당함
     Die       // 사망
 }
@@ -21,6 +21,7 @@ public class Monster : MonoBehaviour, IHitable
     public float MaxHealth = 100;
     public Slider HealthSliderUI;
     public float MoveSpeed = 4f;  // 이동 상태
+    public const float TOLERANCE = 0.1f;
 
     private CharacterController _characterController;  // 캐릭터 컨트롤러
 
@@ -30,6 +31,7 @@ public class Monster : MonoBehaviour, IHitable
 
     public Vector3 StartPoisition;   // 시작 위치
     public float MoveDistance = 20f; // 움직일 수 있는 거리
+
 
    private MonsterState _currentState = MonsterState.Idle;
 
@@ -66,8 +68,8 @@ public class Monster : MonoBehaviour, IHitable
             case MonsterState.Attack:
                 Attack();
                 break;
-            case MonsterState.Return:
-                Return();
+            case MonsterState.Comeback:
+                Comeback();
                 break;
         }
     }
@@ -104,7 +106,7 @@ public class Monster : MonoBehaviour, IHitable
         if (Vector3.Distance(transform.position, StartPoisition) >= MoveDistance)
         {
             Debug.Log("상태 전환: Trace -> Return");
-            _currentState = MonsterState.Return;
+            _currentState = MonsterState.Comeback;
         }
 
     }
@@ -113,17 +115,19 @@ public class Monster : MonoBehaviour, IHitable
 
     }
 
-    private void Return()
+    private void Comeback()
     {
+        // 복귀 상태 행동구현
+
         Vector3 dir = StartPoisition-this.transform.position;
         dir.Normalize();
 
         _characterController.Move(dir* MoveSpeed * Time.deltaTime);
-        transform.LookAt(StartPoisition);
+        RotateCharacter(StartPoisition);
 
-        if (this.gameObject.transform.position == StartPoisition)
+        if (Vector3.Distance(transform.position , StartPoisition)< TOLERANCE)
         {
-            Debug.Log("Idle로 변환");
+            Debug.Log("상태 전환: Comeback -> idle");
             _currentState = MonsterState.Idle;
         }
     }
@@ -155,4 +159,17 @@ public class Monster : MonoBehaviour, IHitable
         
     }
 
+    public void RotateCharacter(Vector3 targetPosition)
+    {
+        // 캐릭터의 위치를 기준으로 회전을 계산
+        Vector3 direction = targetPosition - transform.position;
+        direction.y = 0f; // y 값은 회전에 영향을 미치지 않도록 설정
+
+        // 목표 방향의 Euler 각도 계산
+        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+
+        // 회전 적용
+        transform.eulerAngles = new Vector3(0, targetAngle, 0);
+    }
 }
