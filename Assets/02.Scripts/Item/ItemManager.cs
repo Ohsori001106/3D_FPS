@@ -13,6 +13,7 @@ public class ItemManager : MonoBehaviour
     public Text StaminaItemCountTextUI;
     public Text BulletItemCountTextUI;
 
+    
     private void Awake()
     {
         if (Instance == null)

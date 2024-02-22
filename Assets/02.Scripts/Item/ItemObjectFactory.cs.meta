@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e047e7ed0eacd8b4787a0163a2eec3a3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - HealthItemPrefab: {fileID: 7061359918779114429, guid: 7de73856ecebdbd48bee699c5875a506, type: 3}
+  - StaminaItemPrefab: {fileID: 8989137045719876391, guid: b6e4080a04545934089bf1d31ec9dacf, type: 3}
+  - BulletItemPrefab: {fileID: 3529793611832478404, guid: 38581c747be4e824a827c15fdc2c85b0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

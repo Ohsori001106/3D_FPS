@@ -40,6 +40,9 @@ public class Drum : MonoBehaviour, IHitable
         }
         _isExplosion = true;
 
+        ItemObjectFactory.Instance.MakePercent(transform.position);
+
+
         GameObject drumBomb = Instantiate(DrumEffectPrefab);
         drumBomb.transform.position = this.transform.position;
 

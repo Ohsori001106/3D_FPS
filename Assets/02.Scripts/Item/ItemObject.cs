@@ -23,43 +23,15 @@ public class ItemObject : MonoBehaviour
         
         if (other.CompareTag("Player"))
         {
-            if (ItemType == ItemType.Health)
-            {
-                float distance = Vector3.Distance(other.transform.position, transform.position);
-                Debug.Log(distance);
-                ItemManager.Instance.AddItem(ItemType.Health);
-                ItemManager.Instance.RefreshUI();
+            float distance = Vector3.Distance(other.transform.position, transform.position);
+            Debug.Log(distance);
+            ItemManager.Instance.AddItem(ItemType);
+            ItemManager.Instance.RefreshUI();
 
-                Destroy(gameObject);
-            }
-            
+            gameObject.SetActive(false);
+         
         }
-        if (other.CompareTag("Player"))
-        {
-            if (ItemType == ItemType.Stamina)
-            {
-                float distance = Vector3.Distance(other.transform.position, transform.position);
-                Debug.Log(distance);
-                ItemManager.Instance.AddItem(ItemType.Stamina);
-                ItemManager.Instance.RefreshUI();
-
-                Destroy(gameObject);
-            }
-            
-        }
-        if (other.CompareTag("Player"))
-        {
-            if (ItemType == ItemType.Bullet)
-            {
-                float distance = Vector3.Distance(other.transform.position, transform.position);
-                Debug.Log(distance);
-                ItemManager.Instance.AddItem(ItemType.Bullet);
-                ItemManager.Instance.RefreshUI();
-
-                Destroy(gameObject);
-            }
-                
-        }
+        
 
     }
 
