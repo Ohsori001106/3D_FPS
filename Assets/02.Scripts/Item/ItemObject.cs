@@ -33,6 +33,7 @@ public class ItemObject : MonoBehaviour
     {
        _traceCoroutine = null;
         _progress = 0;
+       _itemState = ItemState.Idle;
 
     }
     private void Start()

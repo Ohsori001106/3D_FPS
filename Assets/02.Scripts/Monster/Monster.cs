@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
 
 
@@ -26,6 +27,8 @@ public class Monster : MonoBehaviour, IHitable
     public float MoveSpeed = 4f;  // 이동 상태
     public const float TOLERANCE = 0.1f;
     public int Damage = 10;
+    /*********************************/
+    private NavMeshAgent _navMeshAgent;
 
     private Vector3 _knockbackStartPosition;
     private Vector3 _knockbackEndPosition;
@@ -33,7 +36,7 @@ public class Monster : MonoBehaviour, IHitable
     private float _knockbackProgress = 0f;
     public float KnockbackPower = 1.5f;
 
-    private CharacterController _characterController;  // 캐릭터 컨트롤러
+    //private CharacterController _characterController;  // 캐릭터 컨트롤러
 
     public Transform _target; // 플레이어
     public float FindDistance = 5; // 감지 범위
@@ -51,9 +54,11 @@ public class Monster : MonoBehaviour, IHitable
     }
     void Start()
     {
-        _characterController = GetComponent<CharacterController>();
+        //_characterController = GetComponent<CharacterController>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         StartPoisition = transform.position;
+        _navMeshAgent.speed = MoveSpeed;
 
         Init();
     }
@@ -107,12 +112,17 @@ public class Monster : MonoBehaviour, IHitable
         dir.Normalize();
         dir.y = 0;
         // 플레이어에게 다가간다
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
+
+        // 내비게이션이접근하는 최소 거리를 공격하는 거리로 설정
+        _navMeshAgent.stoppingDistance = AttackDistance;
+        // 네비게이션의 목적지를 플레이어의 위치로 한다.
+        _navMeshAgent.destination = _target.position;
         // 쳐다본다
         transform.LookAt(_target);
 
         // 플레이어가 공격범위에 들어오면
-        if (Vector3.Distance(_target.position,transform.position)<=AttackDistance)
+        if ((!_navMeshAgent.pathPending && _navMeshAgent.remainingDistance <=  AttackDistance) || Vector3.Distance(_target.position,transform.position)<=AttackDistance)
         {
             Debug.Log("상태 전환: Trace -> Attack");
             _currentState = MonsterState.Attack;
@@ -155,10 +165,22 @@ public class Monster : MonoBehaviour, IHitable
         Vector3 dir = StartPoisition-this.transform.position;
         dir.Normalize();
 
-        _characterController.Move(dir* MoveSpeed * Time.deltaTime);
+        //_characterController.Move(dir* MoveSpeed * Time.deltaTime);
+
+        // 내비게이션이접근하는 최소 거리를 공격하는 거리로 설정
+        _navMeshAgent.stoppingDistance = TOLERANCE;
+        // 네비게이션의 목적지를 플레이어의 위치로 한다.
+        _navMeshAgent.destination =StartPoisition;
+
         RotateCharacter(StartPoisition);
 
-        if (Vector3.Distance(transform.position , StartPoisition)< TOLERANCE)
+        if(!_navMeshAgent.pathPending&&_navMeshAgent.remainingDistance<=TOLERANCE)
+        {
+            Debug.Log("상태 전환: Comeback -> idle");
+            _currentState = MonsterState.Idle;
+        }
+
+        if (Vector3.Distance(transform.position , StartPoisition)<= TOLERANCE)
         {
             Debug.Log("상태 전환: Comeback -> idle");
             _currentState = MonsterState.Idle;
