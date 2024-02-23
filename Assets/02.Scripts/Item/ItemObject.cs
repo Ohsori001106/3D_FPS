@@ -14,7 +14,7 @@ public class ItemObject : MonoBehaviour
     public ItemType ItemType;
 
     // 실습 과제 36. 상태패턴 방식으로 일정 거리가 되면 아이템이 Slerp로 날아오게 하기 (대기 상태, 날아오는 상태)
-    private ItemState _itemState= ItemState.Idle;
+    private ItemState _itemState = ItemState.Idle;
 
     public Transform _player;
     public float ExplosionRadius = 3;
@@ -23,16 +23,23 @@ public class ItemObject : MonoBehaviour
 
     
 
-    public Vector3 _startPoisition;
+    public Vector3 _startPosition;
     private const float TRACE_DURATION = 0.6f;
     private float _progress = 0;
 
     private CharacterController _characterController;
+
+    public void Init()
+    {
+       _traceCoroutine = null;
+        _progress = 0;
+
+    }
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        _startPoisition = transform.position;
+        _startPosition = transform.position;
     }
 
     private void Update()
@@ -54,8 +61,8 @@ public class ItemObject : MonoBehaviour
 
     private void Idle()
     {
-        float distance = Vector3.Distance( _player.position, transform.position );
-        if(distance <= EatDistance )
+        float distance = Vector3.Distance(_player.position, transform.position);
+        if (distance <= EatDistance)
         {
             _itemState = ItemState.Trace;
         }
@@ -65,20 +72,20 @@ public class ItemObject : MonoBehaviour
             _itemState = ItemState.Trace;
         }*/
     }
+
+    private Coroutine _traceCoroutine;
     private void Trace()
     {
-        _progress += Time.deltaTime / TRACE_DURATION;
-        transform.position = Vector3.Slerp(_startPoisition, _player.position, _progress);
 
-        if( _progress >= 0.8 )
+        if (_traceCoroutine == null)
         {
-            
-            
-            ItemManager.Instance.AddItem(ItemType);
-            ItemManager.Instance.RefreshUI();
-
-            gameObject.SetActive(false);
+            _traceCoroutine = StartCoroutine(Trace_Coroutine());
         }
+        /*
+        }*/
+
+
+
         // Slerp( 시작점, 종료점 , 진행도)
         // 진행도를 누적할 시간
 
@@ -90,6 +97,21 @@ public class ItemObject : MonoBehaviour
         transform.LookAt(_player);*/
 
     }
-    
 
+    private IEnumerator Trace_Coroutine()
+    {
+        while (_progress < 0.7f)
+        {
+            _progress += Time.deltaTime / TRACE_DURATION;
+            transform.position = Vector3.Slerp(_startPosition, _player.position, _progress);
+            yield return null;
+        }
+
+        // Trace가 완료된 후의 로직 추가
+        ItemManager.Instance.AddItem(ItemType);
+        ItemManager.Instance.RefreshUI();
+
+        
+        gameObject.SetActive(false);
+    }
 }
