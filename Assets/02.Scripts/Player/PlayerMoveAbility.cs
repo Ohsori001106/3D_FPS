@@ -16,6 +16,8 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     public float StaminaConsumeSpeed = 33f; // 초당 스태미나 소모량
     public float StaminaChargeSpeed = 50;   // 초당 스태미나 충전량
 
+    public Image HitEffectImageUI;
+
     [Header("스태미나 슬라이더 UI")]
     public Slider StaminaSliderUI;
 
@@ -55,13 +57,27 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     public float MaxHealth = 100;
     public Slider HealthSliderUI;
 
+    public float _hitEffectTime = 0.3f;
+
     public void Hit(int damage)
     {
+        StartCoroutine(HitEffect_Coroutine(_hitEffectTime));
         Health -= damage;
         if (Health < 0)
         {
+            HealthSliderUI.value = 0f;
             Destroy(gameObject);
         }
+    }
+
+    private IEnumerator HitEffect_Coroutine(float delay)
+    {
+        // 과제 40. 히트 이펙트 이미지 0.3.초 동안 보이게 구현
+        
+        HitEffectImageUI.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds (delay);
+        HitEffectImageUI.gameObject.SetActive(false);
     }
 
     private void Awake()
