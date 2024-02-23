@@ -136,6 +136,11 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
         // 구현 순서 : 
         if (_characterController.isGrounded)
         {
+
+            if(_yVelocity <  -30)
+            {
+                Hit(10 * (int)(_yVelocity / -10F));
+            }
             _isJumping = false;
             _isClimbing = false;
             _yVelocity = 0f;
