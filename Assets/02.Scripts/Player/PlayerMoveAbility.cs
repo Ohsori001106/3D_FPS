@@ -59,9 +59,13 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
 
     public float _hitEffectTime = 0.3f;
 
+  
+
+
     public void Hit(int damage)
     {
         StartCoroutine(HitEffect_Coroutine(_hitEffectTime));
+        CameraManager.Instance.CameraShake.Shake();
         Health -= damage;
         if (Health < 0)
         {
@@ -79,7 +83,12 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
         yield return new WaitForSeconds (delay);
         HitEffectImageUI.gameObject.SetActive(false);
     }
-
+    private IEnumerable HitCameraShake_Coroutine(float delay)
+    {
+        
+        yield return new WaitForSeconds (delay);
+        
+    }
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -90,6 +99,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     {
         Stamina = MaxStamina;
         Health = MaxHealth;
+        
     }
 
     // 구현순서
@@ -153,7 +163,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
         if (_characterController.isGrounded)
         {
 
-            if(_yVelocity <  -30)
+            if(_yVelocity <  -20)
             {
                 Hit(10 * (int)(_yVelocity / -10F));
             }

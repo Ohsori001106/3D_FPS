@@ -18,6 +18,7 @@ public class CameraManager : MonoBehaviour
 {
     public static CameraManager Instance { get; private set; }
 
+    public CameraShake CameraShake;
     public static bool Focus
     {
         get
