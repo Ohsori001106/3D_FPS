@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2481436350255563623}
   - component: {fileID: 5790151794878259292}
   - component: {fileID: 2149777393741893952}
-  - component: {fileID: 5366330796658167230}
   - component: {fileID: 4841849410552173013}
-  m_Layer: 0
+  - component: {fileID: 5606582549168155277}
+  m_Layer: 8
   m_Name: BulletItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.99, y: 0.61, z: -9.23}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1.0991, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -105,35 +105,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &5366330796658167230
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8989137045719876391}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Size: {x: 1.4699435, y: 1.3529983, z: 1.5055332}
+  m_Center: {x: -0.025859833, y: -0.007600365, z: 0.041953087}
 --- !u!114 &4841849410552173013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,5 +119,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bebddcf5cedecf747bf22a552677f0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemType: 2
+  ItemType: 0
+  _player: {fileID: 0}
   ExplosionRadius: 3
+  EatDistance: 7
+  MoveSpeed: 10
+  _startPoisition: {x: 0, y: 0, z: 0}
+--- !u!143 &5606582549168155277
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8989137045719876391}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}

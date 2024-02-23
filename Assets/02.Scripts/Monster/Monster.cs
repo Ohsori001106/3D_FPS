@@ -16,8 +16,8 @@ public enum MonsterState
 }
 public class Monster : MonoBehaviour, IHitable
 {
-    public float AttackTimer = 0;
-    public float AttackCoolTime = 0.5f;
+    private float AttackTimer = 0;
+    private float AttackCoolTime = 1f;
 
     [Range(0, 100)]
     public float Health;
@@ -26,6 +26,12 @@ public class Monster : MonoBehaviour, IHitable
     public float MoveSpeed = 4f;  // 이동 상태
     public const float TOLERANCE = 0.1f;
     public int Damage = 10;
+
+    private Vector3 _knockbackStartPosition;
+    private Vector3 _knockbackEndPosition;
+    private const float KNOCKBACK_DURATION = 0.2f;
+    private float _knockbackProgress = 0f;
+    public float KnockbackPower = 1.5f;
 
     private CharacterController _characterController;  // 캐릭터 컨트롤러
 
@@ -75,6 +81,9 @@ public class Monster : MonoBehaviour, IHitable
             case MonsterState.Comeback:
                 Comeback();
                 break;
+            case MonsterState.Damaged:
+                Damaged();
+                break;
         }
     }
 
@@ -92,6 +101,7 @@ public class Monster : MonoBehaviour, IHitable
 
     private void Trace()
     {
+        
         // 플레이어를 쳐다본다
         Vector3 dir = _target.transform.position - this.transform.position;
         dir.Normalize();
@@ -109,6 +119,7 @@ public class Monster : MonoBehaviour, IHitable
         }
         if (Vector3.Distance(transform.position, StartPoisition) >= MoveDistance)
         {
+            
             Debug.Log("상태 전환: Trace -> Return");
             _currentState = MonsterState.Comeback;
         }
@@ -118,6 +129,7 @@ public class Monster : MonoBehaviour, IHitable
     {
         if ( Vector3.Distance(_target.position, transform.position)>AttackDistance)
         {
+            AttackTimer = 0f;
             Debug.Log("상태 전환: Attack -> Trace");
             _currentState = MonsterState.Trace;
             return;
@@ -152,6 +164,33 @@ public class Monster : MonoBehaviour, IHitable
             _currentState = MonsterState.Idle;
         }
     }
+    private void Damaged()
+    {
+        // 1.Damaged 애니메이션 실행(0.5초)
+        // todo: 애니메이션 실행
+        // 2. 넉백 (lerp -> 0.5초)
+        // 2-1. 넉백 시작/최종 위치를 구한다.
+        if(_knockbackProgress == 0)
+        {
+            _knockbackStartPosition = transform.position;
+            Vector3 dir = transform.position - _target.position;
+            dir.y = 0f;
+            dir.Normalize();
+            _knockbackEndPosition = transform.position + dir * KnockbackPower;
+        }
+        _knockbackProgress += Time.deltaTime / KNOCKBACK_DURATION;
+        // 2-2. Lerp를 이용해 넉백 구현
+        transform.position = Vector3.Lerp(_knockbackStartPosition, _knockbackEndPosition, _knockbackProgress);
+        if( _knockbackProgress > 1 )
+        {
+            _knockbackProgress = 0;
+        Debug.Log("상태 변환 Damged -> Trace");
+         _currentState = MonsterState.Trace;
+        }
+        
+    }
+
+    
 
     public void Hit(int damage)
     {
@@ -163,6 +202,10 @@ public class Monster : MonoBehaviour, IHitable
                 Die();
 
             }
+        else
+        {
+            _currentState = MonsterState.Damaged;
+        }
         
             
     }
@@ -193,4 +236,6 @@ public class Monster : MonoBehaviour, IHitable
         // 회전 적용
         transform.eulerAngles = new Vector3(0, targetAngle, 0);
     }
+
+    
 }
