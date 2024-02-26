@@ -74,37 +74,42 @@ public class Monster : MonoBehaviour, IHitable
 
     private void Update()
     {
-        HealthSliderUI.value = (float)Health / (float)MaxHealth;  // 0 ~ 1
-
-        // 상태 패턴: 상태에 따라 행동을 다르게 하는 패턴 
-        // 1. 몬스터가 가질 수 있는 행동에 따라 상태를 나눈다.
-        // 2. 상태들이 조건에 따라 자연스럽게 전환(Transition)되게 설계한다.
-
-        switch (_currentState)
+        if (GameManager.Instance.state == GameState.Start)
         {
-            case MonsterState.Idle:
-                Idle();
-                break;
 
-            case MonsterState.Patrol:
-                Patrol();
-                break;
 
-            case MonsterState.Trace:
-                Trace();
-                break;
+            HealthSliderUI.value = (float)Health / (float)MaxHealth;  // 0 ~ 1
 
-            case MonsterState.Comeback:
-                Comeback();
-                break;
+            // 상태 패턴: 상태에 따라 행동을 다르게 하는 패턴 
+            // 1. 몬스터가 가질 수 있는 행동에 따라 상태를 나눈다.
+            // 2. 상태들이 조건에 따라 자연스럽게 전환(Transition)되게 설계한다.
 
-            case MonsterState.Attack:
-                Attack();
-                break;
+            switch (_currentState)
+            {
+                case MonsterState.Idle:
+                    Idle();
+                    break;
 
-            case MonsterState.Damaged:
-                Damaged();
-                break;
+                case MonsterState.Patrol:
+                    Patrol();
+                    break;
+
+                case MonsterState.Trace:
+                    Trace();
+                    break;
+
+                case MonsterState.Comeback:
+                    Comeback();
+                    break;
+
+                case MonsterState.Attack:
+                    Attack();
+                    break;
+
+                case MonsterState.Damaged:
+                    Damaged();
+                    break;
+            }
         }
     }
 
