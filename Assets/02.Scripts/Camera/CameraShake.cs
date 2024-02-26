@@ -9,7 +9,7 @@ public class CameraShake : MonoBehaviour
     // - 쉐이킹 시간
     public float ShakingDuration = 0.2f;
     // - 쉐이킹 누적시간
-    public float _shakingTimer = 0f;
+    private float _shakingTimer = 0f;
     // - 쉐이킹 파워
     public float ShakingPower = 0.025f;
     // - 쉐이킹 중이냐
