@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,8 +43,8 @@ public class PlayerGunFireAbility : MonoBehaviour
     // 총알집
     public int BulletBox;
     // - 총알 개수 텍스트 UI
-    public Text bulletUI;
-    public Text ReloadUI;
+    public TextMeshProUGUI bulletUI;
+    public TextMeshProUGUI ReloadUI;
 
     // 무기 이미지 UI
     public Image GunImageUI;
@@ -62,121 +63,126 @@ public class PlayerGunFireAbility : MonoBehaviour
     
     private void Update()
     {
-       Timer += Time.deltaTime;
+        if (GameManager.Instance.state == GameState.Start)
+        {
 
-        if (Input.GetMouseButtonDown(2) && CurrentGun.GType == GunType.Sniper)
-        {
-            _isZoomMode = !_isZoomMode; // 줌 모드 뒤집기
-            _zoomProgress = 0f;
-            RefreshUI();
-        }
-        if(CurrentGun.GType == GunType.Sniper && _zoomProgress < 1)
-        {
-            if(_isZoomMode) // 줌인
-            {
-                _zoomProgress += Time.deltaTime / ZoomInDuration;
-                Camera.main.fieldOfView = Mathf.Lerp(DefaultFOV,ZoomFOV, _zoomProgress);
-            }
-            else
-            {
-                _zoomProgress += Time.deltaTime / ZoomOutDuration;
-                Camera.main.fieldOfView = Mathf.Lerp(ZoomFOV, DefaultFOV, _zoomProgress);
-            }
-        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            _isZoomMode = false;
-            CurrentGun = GunInventory[0];
-            RifreshGun();
-            RefreshUI();
-            RefreshZoomMode();
-            _zoomProgress = 1f;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            _isZoomMode = false;
-            CurrentGun = GunInventory[1];
-            RifreshGun();
-            RefreshUI();
-            RefreshZoomMode();
-            _zoomProgress = 1f;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            _isZoomMode = false;
-            CurrentGun = GunInventory[2];
-            RifreshGun();
-            RefreshUI();
-            RefreshZoomMode();
-            _zoomProgress = 1f;
-        }
-        // 1. 만약에 마우스 왼쪽 버튼을 누른 상태 && 총알 쿨타임 && 총알이 0보다 클 때 발사
-        if (Input.GetMouseButton(0) && Timer >= CurrentGun.FireCoolTime && CurrentGun.BulletRemainCount > 0)
-        {
-            // 재장전 중이라면 재장전 코루틴을 중지
-            if (_isReloading)
-            {
-                StopAllCoroutines();
-                _isReloading = false;
-                
-            }
-            CurrentGun.BulletRemainCount--;
-            Timer = 0;
+            Timer += Time.deltaTime;
 
-            // 2. 레이(광선)을 생성하고,위치와 방향을 설정한다.
-            Ray ray = new Ray(Camera.main.transform.position,Camera.main.transform.forward);
-            // 3. 레이를 발사한다.
-            // 4. 레이가 부딛힌 대상의 정보를 받아온다.
-            RaycastHit hitInfo;
-            bool IsHit = Physics.Raycast(ray, out hitInfo);
-            if (IsHit)
+            if (Input.GetMouseButtonDown(2) && CurrentGun.GType == GunType.Sniper)
             {
-                IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
-                if (hitObject != null)
+                _isZoomMode = !_isZoomMode; // 줌 모드 뒤집기
+                _zoomProgress = 0f;
+                RefreshUI();
+            }
+            if (CurrentGun.GType == GunType.Sniper && _zoomProgress < 1)
+            {
+                if (_isZoomMode) // 줌인
                 {
-                    hitObject.Hit(CurrentGun.damage);
+                    _zoomProgress += Time.deltaTime / ZoomInDuration;
+                    Camera.main.fieldOfView = Mathf.Lerp(DefaultFOV, ZoomFOV, _zoomProgress);
                 }
-
-                // 실습 과제 18. 레이저를 몬스터에게 맞출 시 몬스터 체력 닳는 기능 구현
-                Monster monster = GetComponent<Monster>();
-
-                // 5. 부딛힌 위치에 (총알이 튀는) 이펙트를 위치한다.
-                HitEffect.gameObject.transform.position = hitInfo.point;
-                // 6. 이펙트가 쳐다보는 방향을 부딛힌 위치에 법선 벡터로 한다.반동
-                HitEffect.gameObject.transform.forward = hitInfo.normal;
-                HitEffect.Play();
+                else
+                {
+                    _zoomProgress += Time.deltaTime / ZoomOutDuration;
+                    Camera.main.fieldOfView = Mathf.Lerp(ZoomFOV, DefaultFOV, _zoomProgress);
+                }
             }
-            RefreshUI();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletMaxCount > 0)   // R 키를 누르면 재장전을 시작
-        {
-            
-            _isReloading = true;
-            StartCoroutine(Reload_Coroutine(CurrentGun.Relode));
-            ReloadingUI();
-        }
 
-        if (Input.GetKeyDown(KeyCode.LeftBracket)) // [ 키를 눌렀을 때
-        {
-            _currentGunIndex--;
-            if (_currentGunIndex < 0)
-                _currentGunIndex = GunInventory.Count - 1;
-            _isZoomMode = false;
-            ChangeGun();
-            RefreshZoomMode();
-            _zoomProgress = 1f;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightBracket)) // ] 키를 눌렀을 때
-        {
-            _currentGunIndex++;
-            if (_currentGunIndex >= GunInventory.Count)
-                _currentGunIndex = 0;
-            _isZoomMode = false;
-            ChangeGun();
-            RefreshZoomMode();
-            _zoomProgress = 1f;
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _isZoomMode = false;
+                CurrentGun = GunInventory[0];
+                RifreshGun();
+                RefreshUI();
+                RefreshZoomMode();
+                _zoomProgress = 1f;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                _isZoomMode = false;
+                CurrentGun = GunInventory[1];
+                RifreshGun();
+                RefreshUI();
+                RefreshZoomMode();
+                _zoomProgress = 1f;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                _isZoomMode = false;
+                CurrentGun = GunInventory[2];
+                RifreshGun();
+                RefreshUI();
+                RefreshZoomMode();
+                _zoomProgress = 1f;
+            }
+            // 1. 만약에 마우스 왼쪽 버튼을 누른 상태 && 총알 쿨타임 && 총알이 0보다 클 때 발사
+            if (Input.GetMouseButton(0) && Timer >= CurrentGun.FireCoolTime && CurrentGun.BulletRemainCount > 0)
+            {
+                // 재장전 중이라면 재장전 코루틴을 중지
+                if (_isReloading)
+                {
+                    StopAllCoroutines();
+                    _isReloading = false;
+
+                }
+                CurrentGun.BulletRemainCount--;
+                Timer = 0;
+
+                // 2. 레이(광선)을 생성하고,위치와 방향을 설정한다.
+                Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+                // 3. 레이를 발사한다.
+                // 4. 레이가 부딛힌 대상의 정보를 받아온다.
+                RaycastHit hitInfo;
+                bool IsHit = Physics.Raycast(ray, out hitInfo);
+                if (IsHit)
+                {
+                    IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
+                    if (hitObject != null)
+                    {
+                        hitObject.Hit(CurrentGun.damage);
+                    }
+
+                    // 실습 과제 18. 레이저를 몬스터에게 맞출 시 몬스터 체력 닳는 기능 구현
+                    Monster monster = GetComponent<Monster>();
+
+                    // 5. 부딛힌 위치에 (총알이 튀는) 이펙트를 위치한다.
+                    HitEffect.gameObject.transform.position = hitInfo.point;
+                    // 6. 이펙트가 쳐다보는 방향을 부딛힌 위치에 법선 벡터로 한다.반동
+                    HitEffect.gameObject.transform.forward = hitInfo.normal;
+                    HitEffect.Play();
+                }
+                RefreshUI();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletMaxCount > 0)   // R 키를 누르면 재장전을 시작
+            {
+
+                _isReloading = true;
+                StartCoroutine(Reload_Coroutine(CurrentGun.Relode));
+                ReloadingUI();
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftBracket)) // [ 키를 눌렀을 때
+            {
+                _currentGunIndex--;
+                if (_currentGunIndex < 0)
+                    _currentGunIndex = GunInventory.Count - 1;
+                _isZoomMode = false;
+                ChangeGun();
+                RefreshZoomMode();
+                _zoomProgress = 1f;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightBracket)) // ] 키를 눌렀을 때
+            {
+                _currentGunIndex++;
+                if (_currentGunIndex >= GunInventory.Count)
+                    _currentGunIndex = 0;
+                _isZoomMode = false;
+                ChangeGun();
+                RefreshZoomMode();
+                _zoomProgress = 1f;
+            }
         }
     }
 
