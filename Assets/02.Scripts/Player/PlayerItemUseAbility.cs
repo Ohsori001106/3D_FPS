@@ -15,20 +15,20 @@ public class PlayerItemUseAbility : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.T))
             {
                 ItemManager.Instance.TryUseItem(ItemType.Health);
-                ItemManager.Instance.RefreshUI();
+                ItemManager.Instance.OnDataChanged.Invoke();
 
             }
             if (Input.GetKeyDown(KeyCode.Y))
             {
                 ItemManager.Instance.TryUseItem(ItemType.Stamina);
-                ItemManager.Instance.RefreshUI();
+                ItemManager.Instance.OnDataChanged.Invoke(); 
 
             }
             if (Input.GetKeyDown(KeyCode.U))
             {
 
                 ItemManager.Instance.TryUseItem(ItemType.Bullet);
-                ItemManager.Instance.RefreshUI();
+                ItemManager.Instance.OnDataChanged.Invoke();
 
             }
         }

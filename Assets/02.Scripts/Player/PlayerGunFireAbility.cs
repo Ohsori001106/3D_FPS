@@ -160,7 +160,7 @@ public class PlayerGunFireAbility : MonoBehaviour
 
                 _isReloading = true;
                 StartCoroutine(Reload_Coroutine(CurrentGun.Relode));
-                ReloadingUI();
+                 
             }
 
             if (Input.GetKeyDown(KeyCode.LeftBracket)) // [ 키를 눌렀을 때

@@ -110,7 +110,7 @@ public class ItemObject : MonoBehaviour
 
         // Trace가 완료된 후의 로직 추가
         ItemManager.Instance.AddItem(ItemType);
-        ItemManager.Instance.RefreshUI();
+        ItemManager.Instance.OnDataChanged.Invoke();
 
         
         gameObject.SetActive(false);
