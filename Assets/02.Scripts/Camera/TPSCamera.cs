@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using static GameManager;
 
 // 3인칭 슈팅 (Third Person Shooter)
 // 게임상의 캐릭터가 보는 시점이 아닌, 캐릭터를 보는 시점 즉, 3인칭 관찰자 시점의 카메라
@@ -25,14 +26,18 @@ public class TPSCamera : MonoBehaviour
     public float a;
     private void LateUpdate()
     {
-        transform.localPosition = Target.position + Offset;
-        transform.LookAt(Target);
+        if (GameManager.Instance.state == GameState.Start)
+        {
+            transform.localPosition = Target.position + Offset;
+            transform.LookAt(Target);
 
-        Vector2 xy = CameraManager.Instance.XY;
-        transform.RotateAround(Target.position, Vector3.up, xy.x);
-        transform.RotateAround(Target.position, transform.right, -xy.y);
+            Vector2 xy = CameraManager.Instance.XY;
+            transform.RotateAround(Target.position, Vector3.up, xy.x);
+            transform.RotateAround(Target.position, transform.right, -xy.y);
 
 
-        transform.localPosition = Target.position - transform.forward * Offset.magnitude + Vector3.up * (Offset.y - a);
+            transform.localPosition = Target.position - transform.forward * Offset.magnitude + Vector3.up * (Offset.y - a);
+        }
+            
     }
 }

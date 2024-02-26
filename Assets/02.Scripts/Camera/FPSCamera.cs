@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static GameManager;
 using Cursor = UnityEngine.Cursor;
 
 // 1인칭 슈팅 (First Person Shooter)
@@ -13,10 +14,14 @@ public class FPSCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.localPosition = Target.position;
+        if (GameManager.Instance.state == GameState.Start)
+        {
+            transform.localPosition = Target.position;
 
-        Vector2 xy = CameraManager.Instance.XY;
-        transform.eulerAngles = new Vector3(-xy.y, xy.x, 0);
+            Vector2 xy = CameraManager.Instance.XY;
+            transform.eulerAngles = new Vector3(-xy.y, xy.x, 0);
+        }
+            
 
     }
 }
