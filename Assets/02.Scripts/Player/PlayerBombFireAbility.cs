@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class PlayerBombFireAbility : MonoBehaviour
 {
+    private Animator _animator;
+
     // 목표: 마우스 오른쪽 버튼을 누르면 시선이 바라보는 방향으로 수류탄을 던지고 싶다.
     // 필요 속성:
     // - 수류탄 프리팹
@@ -40,6 +42,7 @@ public class PlayerBombFireAbility : MonoBehaviour
             // 3. 창고에 집어 넣는다.
         }
 
+        _animator = GetComponentInChildren<Animator>();
         BombRemainCount = BombMaxCount;
 
         RefreshUI();
@@ -64,25 +67,34 @@ public class PlayerBombFireAbility : MonoBehaviour
 
                 RefreshUI();
 
+                _animator.SetTrigger("Throw");
                 // 2. 창고에서 수류탄을 꺼낸 다음 던지는 위치로 조절
-                GameObject bomb = null;
-                for (int i = 0; i < BombPool.Count; ++i)        // 1. 창고를 뒤진다.
-                {
-                    if (BombPool[i].activeInHierarchy == false) // 2. 쓸만한 폭탄을 찾는다.
-                    {
-                        bomb = BombPool[i];
-                        bomb.SetActive(true);                   // 3. 꺼낸다.
-                        break;
-                    }
-                }
-
-                bomb.transform.position = FirePosition.position;
-
-                // 3. 시선이 바라보는 방향(카메라가 바라보는 방향 = 카메라의 전방) 으로 수류탄 투척
-                Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
-                rigidbody.velocity = Vector3.zero;
-                rigidbody.AddForce(Camera.main.transform.forward * ThrowPower, ForceMode.Impulse);
+                
             }
         }
+    }
+
+    public void ThrowEvent()
+    {
+            GameObject bomb = null;
+            for (int i = 0; i < BombPool.Count; ++i)        // 1. 창고를 뒤진다.
+            {
+                if (BombPool[i].activeInHierarchy == false) // 2. 쓸만한 폭탄을 찾는다.
+                {
+                    bomb = BombPool[i];
+                    bomb.SetActive(true);                   // 3. 꺼낸다.
+                    
+                    break;
+                }
+            }
+
+            bomb.transform.position = FirePosition.position;
+
+            // 3. 시선이 바라보는 방향(카메라가 바라보는 방향 = 카메라의 전방) 으로 수류탄 투척
+            Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.AddForce(Camera.main.transform.forward * ThrowPower, ForceMode.Impulse);
+            rigidbody.AddTorque(Camera.main.transform.forward * ThrowPower, ForceMode.Impulse);
+
     }
 }

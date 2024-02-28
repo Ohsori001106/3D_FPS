@@ -60,7 +60,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
 
     public float _hitEffectTime = 0.3f;
 
-  
+    private Animator _animator;
 
 
     public void Hit(int damage)
@@ -93,6 +93,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _animator = GetComponentInChildren<Animator>();
        
     }
 
@@ -136,6 +137,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
             float v = Input.GetAxis("Vertical");
             // 2. 방향구하기
             Vector3 dir = new Vector3(x: h, y: 0, z: v);          // 로컬 좌표계 (나만의 동서남북)
+            Vector3 unNormalizedDir = dir;
             dir.Normalize();
 
             // 2. '캐릭터가 바라보는 방향'을 기준으로 방향구하기
@@ -215,7 +217,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
             // 3-2. 이동하기
             //transform.position += speed * dir * Time.deltaTime;
             _characterController.Move(dir * speed * Time.deltaTime);
-
+            _animator.SetFloat("Move", unNormalizedDir.magnitude);
 
             if (Input.GetKeyDown(KeyCode.Alpha9))
             {

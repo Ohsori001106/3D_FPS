@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PlayerGunFireAbility : MonoBehaviour
 {
     public Gun CurrentGun;        // 현재 들고있는 총
@@ -29,6 +30,8 @@ public class PlayerGunFireAbility : MonoBehaviour
     // 총을 담는 인벤토리
     public List<Gun> GunInventory;
 
+    public List<GameObject> MuzzleEffects;
+
     // - 총알 튀는 이펙트 프리팹
     public ParticleSystem HitEffect;
 
@@ -48,6 +51,10 @@ public class PlayerGunFireAbility : MonoBehaviour
     {
         _currentGunIndex = 0;
 
+        foreach(GameObject muzzleEffect in MuzzleEffects)
+        {
+            muzzleEffect.SetActive(false);
+        }
         // 총알 개수 초기화
         RefreshUI();
         RefreshGun();
@@ -73,7 +80,7 @@ public class PlayerGunFireAbility : MonoBehaviour
 
         _isReloading = false;
     }
-
+    
     // 줌 모드에 따라 카메라 FOV 수정해주는 메서드
     private void RefreshZoomMode()
     {
@@ -200,6 +207,9 @@ public class PlayerGunFireAbility : MonoBehaviour
 
             _timer = 0;
 
+            StartCoroutine(MuzzleEffectOn_Coroutine());
+            
+
             // 2. 레이(광선)을 생성하고, 위치와 방향을 설정한다.
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             // 3. 레이를 발사한다.
@@ -224,6 +234,16 @@ public class PlayerGunFireAbility : MonoBehaviour
         }
     }
 
+    private IEnumerator MuzzleEffectOn_Coroutine()
+    {
+        // 총 이펙트 중 하나를 켜준다.
+        int randomIndex = UnityEngine.Random.Range(0, MuzzleEffects.Count);
+        MuzzleEffects[randomIndex].SetActive(true);
+        // 0.1초 후...
+        yield return new WaitForSeconds(0.1f);
+        // 꺼준다
+        MuzzleEffects[randomIndex].SetActive(false);
+    }
     private void RefreshGun()
     {
         foreach (Gun gun in GunInventory)
