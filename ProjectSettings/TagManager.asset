@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Monster
   - Gun
+  - Weapon
+  - SecondCamera
+  - BulletSpawn
+  - LevelPart
+  - Dummie
+  - Environment
   layers:
   - Default
   - TransparentFX

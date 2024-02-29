@@ -18,6 +18,21 @@ public class Drum : MonoBehaviour, IHitable
     private bool _isExplosion = false;
 
     public int Damage = 70;
+
+    public Texture[] textures;
+    private new MeshRenderer renderer;
+    private Rigidbody rb;
+
+    void Start()
+    {
+        
+        rb = GetComponent<Rigidbody>();
+        renderer = GetComponentInChildren<MeshRenderer>();
+
+        int idx = UnityEngine.Random.Range(0, textures.Length);
+
+        GetComponent<Renderer>().material.mainTexture = textures[idx];
+    }
     public void Hit(int damage)
     {
         
@@ -55,7 +70,7 @@ public class Drum : MonoBehaviour, IHitable
 
         int findlayer = LayerMask.GetMask("Monster", "Player", "Environment");
         Collider[] colliders = Physics.OverlapSphere(transform.position, ExplosionRadius, findlayer);
-        // 3. Ã£Àº ÄÝ¶óÀÌ´õ Áß¿¡¼­ Å¸°Ý °¡´ÉÇÑ(IHitable) ¿ÀºêÁ§Æ®¸¦ Ã£¾Æ¼­ Hit()ÇÑ´Ù.
+        // 3. Ã£ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(IHitable) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ Hit()ï¿½Ñ´ï¿½.
         foreach (Collider collider in colliders)
         {
             IHitable hitable = collider.GetComponent<IHitable>();
@@ -63,7 +78,7 @@ public class Drum : MonoBehaviour, IHitable
             {
                 
                 
-                    // 4. Hit() ÇÑ´Ù.
+                    // 4. Hit() ï¿½Ñ´ï¿½.
                     hitable.Hit(Damage);
                 
 
@@ -77,7 +92,7 @@ public class Drum : MonoBehaviour, IHitable
             Drum drum = null;
             if (collider.TryGetComponent<Drum>(out drum))
             {
-                // 4. Hit() ÇÑ´Ù.
+                // 4. Hit() ï¿½Ñ´ï¿½.
                 drum.Explosion();
             }
         }
