@@ -592,6 +592,15 @@ MonoBehaviour:
   Health: 0
   MaxHealth: 100
   HealthSliderUI: {fileID: 5302590722927938216}
+  FindDistance: 5
+  AttackDistance: 2
+  MoveSpeed: 4
+  StartPosition: {x: 0, y: 0, z: 0}
+  MoveDistance: 40
+  Damage: 10
+  KnockbackPower: 1.2
+  PatrolTarget: {fileID: 0}
+  BloodPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
 --- !u!1 &7509369347359596908
 GameObject:
   m_ObjectHideFlags: 0

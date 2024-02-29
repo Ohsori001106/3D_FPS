@@ -222,7 +222,18 @@ public class PlayerGunFireAbility : MonoBehaviour
                 IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
                 if (hitObject != null)  // 때릴 수 있는 친구인가요?
                 {
-                    hitObject.Hit(CurrentGun.damage);
+                    
+                    DamageInfo damageInfo = new DamageInfo(DamgeType.Normal, CurrentGun.damage);
+                    damageInfo.Poition = hitInfo.point;
+                    damageInfo.Normal = hitInfo.normal;
+                    if (UnityEngine.Random.Range(0, 5) == 0)
+                    {
+                        Debug.Log("크리티컬");
+                        damageInfo.DamgeType = DamgeType.Critical;
+                        damageInfo.Amount *= 2;
+                    }
+
+                    hitObject.Hit(damageInfo);
                 }
 
                 // 5. 부딛힌 위치에 (총알이 튀는)이펙트를 위치한다.

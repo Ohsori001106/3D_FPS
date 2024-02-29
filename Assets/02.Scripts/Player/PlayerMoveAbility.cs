@@ -63,11 +63,11 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     private Animator _animator;
 
 
-    public void Hit(int damage)
+    public void Hit(DamageInfo damageInfo)
     {
         StartCoroutine(HitEffect_Coroutine(_hitEffectTime));
         CameraManager.Instance.CameraShake.Shake();
-        Health -= damage;
+        Health -= damageInfo.Amount;
         if (Health < 0)
         {
             HealthSliderUI.value = 0f;
@@ -173,7 +173,8 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
 
                 if (_yVelocity < -20)
                 {
-                    Hit(10 * (int)(_yVelocity / -10F));
+                    DamageInfo damageInfo = new DamageInfo(DamgeType.Normal, 10 * (int)(_yVelocity / -10F));
+                    Hit(damageInfo);
                 }
                 _isJumping = false;
                 _isClimbing = false;

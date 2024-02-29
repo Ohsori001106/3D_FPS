@@ -50,9 +50,14 @@ public class Monster : MonoBehaviour, IHitable
     private const float IDLE_DURATION = 3f;
     private float _idleTimer;
     public Transform PatrolTarget;
+    
+
 
 
     private MonsterState _currentState = MonsterState.Idle;
+
+
+    
 
     private void Start()
     {
@@ -256,8 +261,10 @@ public class Monster : MonoBehaviour, IHitable
         if (playerHitable != null)
         {
             Debug.Log("¶§·È´Ù!");
-            
-            playerHitable.Hit(Damage);
+
+            DamageInfo damageInfo = new DamageInfo(DamgeType.Normal,Damage);
+
+            playerHitable.Hit(damageInfo);
             _attackTimer = 0f;
         }
     }
@@ -294,9 +301,13 @@ public class Monster : MonoBehaviour, IHitable
         }
     }
 
-    public void Hit(int damage)
+    public void Hit(DamageInfo damage)
     {
-        Health -= damage;
+        if (damage.DamgeType == DamgeType.Critical)
+        {
+            BloodFactory.instance.Make(damage.Poition, damage.Normal);
+        }
+        Health -= damage.Amount;
         if (Health <= 0)
         {
             Die();
@@ -308,6 +319,7 @@ public class Monster : MonoBehaviour, IHitable
             _currentState = MonsterState.Damaged;
             _animator.SetTrigger("Damaged");
         }
+        
     }
 
     private void Die()

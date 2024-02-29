@@ -33,7 +33,7 @@ public class Drum : MonoBehaviour, IHitable
 
         GetComponent<Renderer>().material.mainTexture = textures[idx];
     }
-    public void Hit(int damage)
+    public void Hit(DamageInfo damageInfo)
     {
         
         hitCount += 1;
@@ -76,10 +76,10 @@ public class Drum : MonoBehaviour, IHitable
             IHitable hitable = collider.GetComponent<IHitable>();
             if (hitable != null)
             {
-                
-                
-                    // 4. Hit() �Ѵ�.
-                    hitable.Hit(Damage);
+
+                DamageInfo damageInfo = new DamageInfo(DamgeType.Normal, Damage);
+                // 4. Hit() �Ѵ�.
+                hitable.Hit(damageInfo);
                 
 
                 
