@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LobbyScene : MonoBehaviour
 {
@@ -45,9 +46,30 @@ public class LobbyScene : MonoBehaviour
 
     public void OnClickLogInButton()
     {
+        
+        string id = IDInputField.text;
+        string pw = PasswordInputField.text;
         // 0. 아이디 또는 비밀번호 입력X -> "아이디와 비밀번호를 정확하게 입력해주세요."
+        if (id == string.Empty || pw == string.Empty)
+        {
+            NotifyTextUI.text = "아이디와 비밀번호를 입력해 주세요";
+           
+        }
         // 1. 없는 아이디                -> "아이디를 확인해주세요."
+        if (!PlayerPrefs.HasKey(id))
+        {
+            NotifyTextUI.text = "아이디와 비밀번호를 확인해주세요.";
+        }
         // 2. 틀린 비밀번호              -> "비밀번호를 확인해주세요."
+        if (PlayerPrefs.GetString(id) != pw)
+        {
+            NotifyTextUI.text = "아이디와 비밀번호를 확인해주세요.";
+        }
         // 3. 로그인성공                 -> 메인 씬으로 이동
+        else
+        {
+            SceneManager.LoadScene("MainScene");
+
+        }
     }
 }
