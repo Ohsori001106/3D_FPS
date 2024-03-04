@@ -12,6 +12,7 @@ public enum GameState
     Ready,          // 준비
     Start,           // 시작
     Over,           // 오버
+    Pause,
 }
 
 public class GameManager : MonoBehaviour

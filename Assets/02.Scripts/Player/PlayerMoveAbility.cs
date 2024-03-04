@@ -72,6 +72,7 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
         {
             HealthSliderUI.value = 0f;
             GameManager.Instance.GameOver();
+            gameObject.SetActive(false);
         }
     }
 
