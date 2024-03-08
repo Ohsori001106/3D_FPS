@@ -9,8 +9,8 @@ public class PlayerMoveAbility : MonoBehaviour , IHitable
     // 목표: 키보드 방향키(wasd)를 누르면 캐릭터를 바라보는 방향 기준으로 이동시키고 싶다.
     // 속성:
     // - 이동속도
-    public float MoveSpeed = 5; // 일반 속도
-    public float RunSpeed = 10; // 뛰는 속도
+    public float MoveSpeed = 2; // 일반 속도
+    public float RunSpeed = 5; // 뛰는 속도
 
     public float Stamina = 100;             // 스태미나
     public float MaxStamina = 100;    // 스태미나 최대량
